@@ -7,10 +7,17 @@ import type { ConversationListItem, MessageDto } from "../types/dto";
 import { ConversationList } from "../components/ConversationList";
 import { MessageList } from "../components/MessageList";
 import { MessageComposer } from "../components/MessageComposer";
+import * as contactsApi from "../api/contacts.api";
+import { InviteForm } from "../components/InviteForm";
+import { ContactsList } from "../components/ContactsList";
+
 
 export function ChatPage() {
   const { logout } = useAuth();
   const { socket } = useSocket();
+  const [contacts, setContacts] = useState<contactsApi.ContactDto[]>([]);
+const [busy, setBusy] = useState(false);
+const [error, setError] = useState<string | null>(null);
 
   const [conversations, setConversations] = useState<ConversationListItem[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -21,14 +28,37 @@ export function ChatPage() {
     [conversations, activeId]
   );
 
-  async function refreshConversations() {
-    const data = await convApi.listConversations();
-    setConversations(data);
-    if (!activeId && data.length) setActiveId(data[0].id);
+async function refreshAll() {
+  setError(null);
+  setBusy(true);
+  try {
+    const [convs, conts] = await Promise.all([
+      convApi.listConversations(),
+      contactsApi.listContacts(),
+    ]);
+    setConversations(convs);
+    setContacts(conts);
+    if (!activeId && convs.length) setActiveId(convs[0].id);
+  } catch (e: any) {
+    setError(e?.response?.data?.error ?? "FAILED");
+  } finally {
+    setBusy(false);
   }
+}
+
+async function startDirectChat(contactId: string) {
+  setError(null);
+  try {
+    const r = await convApi.createDirect(contactId);
+    await refreshAll();
+    setActiveId(r.id);
+  } catch (e: any) {
+    setError(e?.response?.data?.error ?? "FAILED");
+  }
+}
 
   useEffect(() => {
-    refreshConversations();
+    refreshAll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -72,6 +102,8 @@ export function ChatPage() {
     setMessages((prev) => [...prev, msg]);
   }
 
+  
+
   return (
     <div style={{ display: "grid", gridTemplateColumns: "320px 1fr", height: "100vh", fontFamily: "system-ui" }}>
       <aside style={{ borderRight: "1px solid #ddd", padding: 12 }}>
@@ -85,6 +117,11 @@ export function ChatPage() {
           activeId={activeId}
           onSelect={setActiveId}
         />
+        {error && <div style={{ color: "crimson", marginTop: 8 }}>{error}</div>}
+{busy && <div style={{ marginTop: 8, fontSize: 12 }}>Loading...</div>}
+
+<InviteForm onChanged={refreshAll} />
+<ContactsList contacts={contacts} onStartChat={startDirectChat} />
       </aside>
 
       <main style={{ display: "grid", gridTemplateRows: "1fr auto", padding: 12 }}>
