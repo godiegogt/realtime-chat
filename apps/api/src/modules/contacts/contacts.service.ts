@@ -114,3 +114,8 @@ export async function acceptInvite(token: string, password: string) {
   const accessToken = signAccessToken({ sub: result.id });
   return { accessToken };
 }
+
+export async function getUserIdByEmail(email: string) {
+  const user = await prisma.user.findUnique({ where: { email } });
+  return user?.id ?? null;
+}

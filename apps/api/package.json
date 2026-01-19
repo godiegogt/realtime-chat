@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-     "dev": "tsx watch src/server.ts",
-  "build": "tsc -p tsconfig.json",
-  "test": "vitest",
-  "test:integration": "vitest run",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run -c vitest.integration.config.mts",
+    "test:watch": "vitest",
+    "test:integration": "vitest run -c vitest.integration.config.mts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio"
@@ -23,6 +24,7 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "prisma": "^6.19.2",
+    "socket.io": "^4.8.3",
     "zod": "^4.3.5"
   },
   "devDependencies": {
@@ -32,6 +34,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.0.9",
     "@types/supertest": "^6.0.3",
+    "socket.io-client": "^4.8.3",
     "supertest": "^7.2.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
