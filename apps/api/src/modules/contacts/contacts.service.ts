@@ -28,7 +28,7 @@ export async function inviteByEmail(inviterId: string, email: string) {
   if (existing) {
     if (existing.id === inviterId) throw new Error("CANNOT_INVITE_SELF");
     await createMutualContact(inviterId, existing.id);
-    return { kind: "CONTACT_CREATED" as const };
+    return { kind: "CONTACT_CREATED" as const, contact: { id: existing.id, email: existing.email } };
   }
 
   // Caso 2: no existe → crear invite con token seguro
