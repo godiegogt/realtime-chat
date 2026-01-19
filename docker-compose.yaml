@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:16
+    container_name: realtime_chat_db
+    environment:
+      POSTGRES_USER: chat
+      POSTGRES_PASSWORD: chat
+      POSTGRES_DB: chat
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+volumes:
+  db_data:

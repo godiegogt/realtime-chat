@@ -1,0 +1,14 @@
+{
+  "name": "realtime-chat",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm -w apps/api run dev",
+    "test": "npm -w apps/api test",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down -v"
+  }
+}
