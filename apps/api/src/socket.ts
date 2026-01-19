@@ -63,6 +63,15 @@ export function initSocket(server: http.Server) {
         }
       }
     );
+
+    socket.on("typing:start", ({ conversationId }: { conversationId: string }) => {
+      socket.to(`conversation:${conversationId}`).emit("typing", { conversationId, userId, isTyping: true });
+    });
+
+    socket.on("typing:stop", ({ conversationId }: { conversationId: string }) => {
+      socket.to(`conversation:${conversationId}`).emit("typing", { conversationId, userId, isTyping: false });
+    });
+    
   });
 
   return io;
