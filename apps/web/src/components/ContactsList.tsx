@@ -1,4 +1,5 @@
 import type { ContactDto } from "../api/contacts.api";
+import { Button } from "./ui/Button";
 
 export function ContactsList({
   contacts,
@@ -8,27 +9,41 @@ export function ContactsList({
   onStartChat: (contactId: string) => void;
 }) {
   return (
-    <div style={{ marginTop: 12 }}>
-      <div style={{ fontWeight: 600, marginBottom: 8 }}>Contacts</div>
+    <div className="w-full space-y-3">
+      <div className="text-sm font-extrabold tracking-tight">Contacts</div>
 
-      <div style={{ display: "grid", gap: 8 }}>
-        {contacts.map((c) => (
-          <button
-            key={c.id}
-            onClick={() => onStartChat(c.id)}
-            style={{
-              textAlign: "left",
-              padding: 10,
-              border: "1px solid #ddd",
-              background: "white",
-              cursor: "pointer",
-            }}
-          >
-            <div style={{ fontWeight: 600 }}>{c.email}</div>
-            <div style={{ fontSize: 12, opacity: 0.7 }}>Start chat</div>
-          </button>
-        ))}
-      </div>
+      {contacts.length === 0 ? (
+        <div className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-xs text-white/60">
+          No contacts yet. Invite someone by email.
+        </div>
+      ) : (
+        <div className="grid w-full gap-2">
+          {contacts.map((c) => (
+            <div
+              key={c.id}
+              className="w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5 px-3 py-3 transition hover:bg-white/10"
+            >
+              <div className="flex w-full items-center justify-between gap-3">
+                {/* 👇 Esto evita overflow dentro de flex */}
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-bold">{c.email}</div>
+                  <div className="truncate text-xs text-white/60">
+                    Start a direct chat
+                  </div>
+                </div>
+
+                <Button
+                  variant="primary"
+                  onClick={() => onStartChat(c.id)}
+                  className="shrink-0"
+                >
+                  Chat
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
