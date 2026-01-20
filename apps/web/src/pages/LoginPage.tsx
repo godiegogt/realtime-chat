@@ -101,9 +101,7 @@ export function LoginPage({ onAuthed }: { onAuthed: () => void }) {
           </div>
         </Card>
       </div>
-      <div className="p-6 bg-red-500 text-white font-bold rounded-xl">
-  Tailwind is working ✅
-</div>
+
     </div>
   );
 }
